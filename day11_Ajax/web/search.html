@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <style type="text/css">
+        .content{
+            width:643px;
+            margin:50px auto;
+            text-align: center;
+        }
+        input[type='text']{
+            width:530px;
+            height:40px;
+            font-size: 14px;
+        }
+        input[type='button']{
+            width:100px;
+            height:46px;
+            background: #38f;
+            border: 0;
+            color: #fff;
+            font-size: 15px
+        }
+        .result{
+            /*position: absolute;*/
+            width: 535px;
+            border: 1px solid #999;
+            border-top: 0;
+        }
+        .result div:hover{
+            background-color: #ccc;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <img alt="" src="img/logo.png"><br/><br/>
+    <input type="text" name="word" id="searchWord">
+    <input type="button" value="搜索一下">
+    <div class="result">
+	</div>
+</div>
+<script type="text/javascript" src="./js/jquery-3.3.1.js"></script>
+<script>
+    $("#searchWord").keyup(function () {
+        if (this.value === "" || this.value == null){
+            $(".result").empty().hide();
+        } else {
+            let params = "name=" + this.value;
+            $.post("search",params,function (result) {
+                $(".result").empty().show();
+                for (let user of result) {
+                    $("<div onclick='fun(this)'><dvi/>").html(user.name).appendTo(".result");
+                }
+            },"json");
+        }
+    });
+    function fun(obj) {
+        $("#searchWord").val(obj.innerHTML);
+        $(".result").empty().hide();
+    }
+</script>
+</body>
+</html>

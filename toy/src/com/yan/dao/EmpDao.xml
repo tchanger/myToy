@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.EmpDao">
+    <select id="findById" resultType="com.yan.bean.Emp" parameterType="int">
+        select * from emp
+        <where>
+            id = #{id}
+        </where>
+    </select>
+    <!--            select s.grade from emp e,salarygrade s where e.ename = #{ename} -->
+    <select id="findMore" parameterType="com.yan.bean.Emp" resultMap="queryAll">
+            SELECT   * FROM emp WHERE id IN
+            (SELECT es.id FROM
+            (SELECT e.id,s.grade FROM emp e, salarygrade s WHERE e.salary BETWEEN s.losalary AND s.hisalary AND s.grade >
+            (SELECT grade FROM salarygrade WHERE #{salary} > losalary AND hisalary > #{salary})) es)
+    </select>
+    <select id="findAll" resultMap="queryAll">
+            select * from emp
+    </select>
+            <resultMap id="queryAll" type="com.yan.bean.Emp">
+                <!--一样的可省略，属性与字段名不一致的写上-->
+        <id property="id" column="id"/>
+        <result property="ename" column="ename"/>
+        <result property="jobId" column="job_id"/>
+        <result property="mgr" column="mgr"/>
+        <result property="joindate" column="joindate"/>
+        <result property="salary" column="salary"/>
+        <result property="bonus" column="bonus"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+    <select id="findByDept" resultMap="queryAll" parameterType="int">
+        select * from emp
+        <where>
+            dept_id = #{id}
+        </where>
+    </select>
+    <select id="findByIds" resultMap="queryAll" parameterType="QueryVo">
+        select * from emp
+        <where>
+            <foreach collection="ids" open="and id in (" item="id" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+    <select id="findByArray" resultMap="queryAll" parameterType="int">
+        select * from emp
+        <where>
+            <foreach collection="array" open="and id in (" item="id" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+</mapper>

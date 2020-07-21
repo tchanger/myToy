@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.UserLoginDao">
+    <select id="findById" parameterType="int" resultType="User">
+        select * from user where id = #{uid}
+    </select>
+    <select id="queryAllList" resultMap="userQueryAll">
+        select * from user
+    </select>
+    <resultMap id="userQueryAll" type="User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="birthday" column="birthday"/>
+        <result property="sex" column="sex"/>
+        <result property="address" column="address"/>
+        <collection property="list" select="com.yan.dao.AccountDao.userFindList" ofType="Account" column="id" fetchType="lazy"/>
+    </resultMap>
+    <select id="serch1" parameterType="string" resultType="User">
+        select * from user where username like #{username};
+    </select>
+    <insert id="save" parameterType="User">
+        <selectKey  order="AFTER" resultType="int" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into user(username,sex,birthday,address) values (#{username},#{sex},#{birthday},#{address})
+    </insert>
+    <update id="edit" parameterType="User">
+        update user set username = #{username},sex = #{sex},birthday = #{birthday},address = #{address} where id = #{id}
+    </update>
+</mapper>

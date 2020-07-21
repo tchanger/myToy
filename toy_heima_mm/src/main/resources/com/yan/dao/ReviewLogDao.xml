@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.ReviewLogDao">
+
+    <select id="findByQuestion" resultMap="ReviewLogAll" parameterType="int">
+        select *,(select username from t_user where id = r.user_id) reviewer from t_review_log r where question_id = #{id} ORDER BY id DESC LIMIT 0,1
+    </select>
+    <resultMap id="ReviewLogAll" type="ReviewLog">
+        <id property="id" column="id"/>
+        <result column="question_id" property="questionId"/>
+        <result property="userId" column="user_id"/>
+        <result column="create_date" property="createDate"/>
+    </resultMap>
+
+
+</mapper>

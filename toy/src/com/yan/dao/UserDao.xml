@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.UserLoginDao">
+    <select id="findAll" resultType="com.yan.bean.User">
+        select * from linkman;
+    </select>
+    <select id="findPage" resultType="com.yan.bean.User" parameterType="int">
+        select * from linkman where id = #{id};
+    </select>
+    <delete id="delete" parameterType="int">
+        delete from linkman where id = #{id};
+    </delete>
+    <update id="update" parameterType="com.yan.bean.User">
+        update linkman set name = #{name}, sex = #{sex},age = #{age},address = #{address},qq = #{qq},email = #{email} where id = #{id}
+    </update>
+    <insert id="add" parameterType="com.yan.bean.User">
+        insert into linkman values (#{id},#{name},#{sex},#{age},#{address},#{qq},#{email})
+    </insert>
+</mapper>

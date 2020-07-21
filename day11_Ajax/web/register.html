@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<div>
+    <span>会员注册</span>USER REGISTER
+    <form class="form-horizontal" style="margin-top: 5px;">
+        <table>
+            <tr>
+                <td>用户名</td>
+                <td>
+                    <input type="text" id="username" name="username" placeholder="请输入用户名">
+                    <span id="usernameInfo"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>密码</td>
+                <td>
+                    <input type="password" placeholder="请输入密码">
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="注册"/>
+    </form>
+</div>
+
+<script>
+    $("#username").blur(function () {
+        let params = "username=" + this.value;
+        if (this.value === "" || this.value == null){
+            $("#usernameInfo").html("用户名不能为空").css("color","red");
+        }else {
+            $.post("./loginServlet",params,function (result) {
+                if (result === "true"){
+                    $("#usernameInfo").html("用户已存在").css("color","red");
+                } else {
+                    $("#usernameInfo").html("用户名可用").css("color","green");
+                }
+            },"text")
+        }
+    });
+</script>
+</body>
+</html>

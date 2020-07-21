@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.QuestionDao">
+
+    <select id="findListByPage" parameterType="QueryPageBean" resultMap="QuestionAll">
+        select q.id,q.id+1000 number,q.type,q.subject,q.difficulty,q.create_date createDate,
+        (select username from t_user where id = q.user_id) creator,
+        (select name from t_course where id = q.course_id) courseName,
+        (select count(*) from tr_member_question where question_id = q.id) usedQty
+        from t_question q
+        <include refid="SelectQueryParams"/>
+        limit #{offset},#{pageSize}
+    </select>
+    <sql id="SelectQueryParams">
+        <where>
+            <if test="queryParams != null">
+                <if test="queryParams.courseId != null">
+                    and course_id = #{queryParams.courseId}
+                </if>
+                <if test="queryParams.difficulty != null">
+                    and difficulty = #{queryParams.difficulty}
+                </if>
+                <if test="queryParams.type != null">
+                    and type = #{queryParams.type}
+                </if>
+                <if test="queryParams.keyWord != null and queryParams.keyWord.length() > 0">
+                    and subject like "%"#{queryParams.keyWord}"%"
+                </if>
+            </if>
+            and is_classic = 0
+        </where>
+    </sql>
+    <resultMap id="QuestionAll" type="Question" >
+        <id property="id" column="id"/>
+        <result property="analysisVideo" column="analysis_video"/>
+        <result property="isClassic" column="is_classic"/>
+        <result property="reviewStatus" column="review_status"/>
+        <result property="userId" column="user_id"/>
+        <result property="companyId" column="company_id"/>
+        <result property="catalogId" column="catalog_id"/>
+        <result property="courseId" column="course_id"/>
+    </resultMap>
+
+    <select id="findCount" resultType="long" parameterType="QueryPageBean">
+        select count(*) from t_question
+        <include refid="SelectQueryParams"/>
+    </select>
+
+    <insert id="add" parameterType="Question" >
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into t_question (
+        subject,type,difficulty,analysis,analysis_video,remark,is_classic,status,review_status,create_date,user_id,company_id,catalog_id,course_id
+        ) values (#{subject},#{type},#{difficulty},#{analysis},#{analysisVideo},#{remark},#{isClassic},#{status},#{reviewStatus},#{createDate},#{userId},#{companyId},#{catalogId},#{courseId});
+    </insert>
+
+    <select id="findClassicCount" resultType="long" parameterType="QueryPageBean">
+        select count(*) from t_question
+        <include refid="SelectClassicQueryParams"/>
+    </select>
+
+    <select id="findClassicListByPage" resultMap="QuestionClassic" parameterType="QueryPageBean">
+        select q.id,q.id+1000 number,q.type,q.subject,q.difficulty,q.create_date createDate,status,review_status reviewStatus,
+               (select username from t_user where id = q.user_id) creator,
+               (select name from t_course where id = q.course_id) courseName,
+               (select count(*) from tr_member_question where question_id = q.id) usedQty
+        from t_question q
+        <include refid="SelectClassicQueryParams"/>
+        limit #{offset},#{pageSize}
+    </select>
+    <resultMap id="QuestionClassic" type="Question">
+        <id column="id" property="id"/>
+        <collection property="reviewLog" select="com.yan.dao.ReviewLogDao.findByQuestion" column="id" ofType="ReviewLog"/>
+    </resultMap>
+
+    <sql id="SelectClassicQueryParams">
+        <where>
+            <if test="queryParams != null">
+                <if test="queryParams.status != null">
+                    and status = #{queryParams.status}
+                </if>
+                <if test="queryParams.courseId != null">
+                    and course_id = #{queryParams.courseId}
+                </if>
+                <if test="queryParams.difficulty != null">
+                    and difficulty = #{queryParams.difficulty}
+                </if>
+                <if test="queryParams.type != null">
+                    and type = #{queryParams.type}
+                </if>
+                <if test="queryParams.keyWord != null and queryParams.keyWord.length() > 0">
+                    and subject like "%"#{queryParams.keyWord}"%"
+                </if>
+            </if>
+            and is_classic = 1
+        </where>
+    </sql>
+
+</mapper>

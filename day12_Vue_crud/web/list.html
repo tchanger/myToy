@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap模板</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <style type="text/css">
+        td, th {
+            text-align: center;
+        }
+    </style>
+    <script src="js/vuejs-2.5.16.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+</head>
+<body>
+<div class="container">
+    <h3 style="text-align: center">显示所有用户</h3>
+    <table border="1" class="table table-bordered table-hover">
+        <tr class="success">
+            <th>编号</th>
+            <th>姓名</th>
+            <th>性别</th>
+            <th>年龄</th>
+            <th>籍贯</th>
+            <th>QQ</th>
+            <th>邮箱</th>
+            <th>操作</th>
+        </tr>
+
+        <tr v-for="(linkman,i) in linkmans">
+            <td>{{i+1}}</td>
+            <td>{{linkman.name}}</td>
+            <td>{{linkman.sex}}</td>
+            <td>{{linkman.age}}</td>
+            <td>{{linkman.address}}</td>
+            <td>{{linkman.qq}}</td>
+            <td>{{linkman.email}}</td>
+            <td><a class="btn btn-default btn-sm" @click="findPage(linkman.id)" >修改</a>&nbsp;<a class="btn btn-default btn-sm" @click="deleteLinkman(linkman.id)" >删除</a></td>
+        </tr>
+        <tr>
+            <td colspan="8" align="center"><a class="btn btn-primary" href="add.html">添加用户</a></td>
+        </tr>
+    </table>
+</div>
+</body>
+<script>
+    let v = new Vue({
+        el:".container",
+        data:{
+            linkmans:[]
+        },
+        created:function () {
+            this.queryAll();
+        },
+        methods:{
+            queryAll:function () {
+                axios.get("./Linkman?method=queryAll").then(response => {
+                   if (response.data.flag){
+                       this.linkmans = response.data.result;
+                   }  else {
+                       alert(response.data.message)
+                   }
+                });
+            },
+            deleteLinkman:function (id) {
+                if (confirm("确定要删除吗？")){
+                    axios.get("./Linkman?method=delete&id="+id).then(response => {
+                        if (response.data.flag){
+                            this.queryAll();
+                        } else {
+                            alert(response.data.message);
+                        }
+                    })
+                }
+            },
+            findPage:function (id) {
+                location.href = "update.html?id=" + id;
+            }
+        }
+    });
+</script>
+</html>

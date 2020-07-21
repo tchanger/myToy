@@ -1,0 +1,27 @@
+<c3p0-config>
+    <!-- 默认配置 -->
+    <default-config>
+        <!-- 连接数据库的4项基本参数 -->
+        <property name="driverClass">com.mysql.jdbc.Driver</property>
+        <property name="jdbcUrl">jdbc:mysql:///heimatest</property>
+        <property name="user">root</property>
+        <property name="password">123456</property>
+
+        <!-- 如果池中连接不够时，一次增长多少个 -->
+        <property name="acquireIncrement">5</property>
+        <!-- 初始化连接数 -->
+        <property name="initialPoolSize">20</property>
+        <!-- 最小连接数 -->
+        <property name="minPoolSize">10</property>
+        <!-- 最大连接数 -->
+        <property name="maxPoolSize">50</property>
+    </default-config>
+
+    <!-- 默认配置 -->
+    <named-config name="aaa">
+        <property name="driverClass">com.mysql.jdbc.Driver</property>
+        <property name="jdbcUrl">jdbc:mysql://127.0.0.1:3306/heimatest</property>
+        <property name="user">root</property>
+        <property name="password">123456</property>
+    </named-config>
+</c3p0-config>

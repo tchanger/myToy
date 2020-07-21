@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.AccountDao">
+    <select id="userFindList" resultType="Account" parameterType="int">
+        select * from account where uid = #{id}
+    </select>
+    <select id="queryAllUser" resultMap="accountQueryAllUser">
+        select * from account
+    </select>
+    <resultMap id="accountQueryAllUser" type="Account">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="money" column="money"/>
+        <association property="user" column="uid" select="com.yan.dao.UserLoginDao.findById" javaType="User" fetchType="lazy"/>
+    </resultMap>
+</mapper>

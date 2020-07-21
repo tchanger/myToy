@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.CompanyDao">
+    <select id="findCompanyList" resultMap="CompanySome">
+        select id,short_name,city_id from t_company
+    </select>
+    <resultMap id="CompanySome" type="Company">
+        <id property="id" column="id"/>
+        <result column="short_name" property="shortName"/>
+        <result property="cityId" column="city_id"/>
+        <collection property="industryList" column="id" select="com.yan.dao.IndustryDao.findIndustryByCompany" ofType="Industry"/>
+    </resultMap>
+
+</mapper>

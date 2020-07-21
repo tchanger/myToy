@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<package name="com.yan.bean"/>
+	</typeAliases>
+    <!-- 配置mybatis的环境，default表示默认使用哪个id -->
+	<environments default="toy">
+		<!-- 配置环境,id是环境的唯一标识 -->
+		<environment id="mysql">
+			<!-- 配置使用的事务 -->
+			<transactionManager type="JDBC"/>
+			<!-- 配置连接池 -->
+			<dataSource type="pooled">
+				<!-- 配置创建连接池的必要信息 value可以使用表达式获取properties文件中的内容 -->
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/heimatest"/>
+				<property name="username" value="root"/>
+				<property name="password" value="123456"/>
+			</dataSource>
+		</environment>
+
+		<environment id="toy">
+			<!-- 配置使用的事务 -->
+			<transactionManager type="JDBC"/>
+			<!-- 配置连接池 -->
+			<dataSource type="pooled">
+				<!-- 配置创建连接池的必要信息 value可以使用表达式获取properties文件中的内容 -->
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/toy"/>
+				<property name="username" value="root"/>
+				<property name="password" value="123456"/>
+			</dataSource>
+		</environment>
+		<environment id="test">
+			<!-- 配置使用的事务 -->
+			<transactionManager type="JDBC"/>
+			<!-- 配置连接池 -->
+			<dataSource type="pooled">
+				<!-- 配置创建连接池的必要信息 value可以使用表达式获取properties文件中的内容 -->
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost:3306/test"/>
+				<property name="username" value="root"/>
+				<property name="password" value="123456"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 配置映射文件的位置，或者注解类的位置 -->
+	<mappers>
+        <package name="com.yan.dao"/>
+	</mappers>
+</configuration>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yan.dao.CourseDao">
+    <select id="findCourseList" resultMap="CourseList">
+        select * from t_course
+    </select>
+    <resultMap id="CourseList" type="Course">
+        <id property="id" column="id"/>
+        <collection property="catalogList" ofType="Catalog" column="id" select="com.yan.dao.CatalogDao.findCatalogListByCourse"/>
+        <collection property="tagList" ofType="Tag" column="id" select="com.yan.dao.TagDao.findTagListByCourse"/>
+    </resultMap>
+    <select id="findListByPage" resultMap="CourseALl" parameterType="QueryPageBean">
+        SELECT c.id,c.name,c.create_date createDate,c.is_show isShow,c.order_no orderNo,
+        (SELECT username FROM t_user u WHERE u.id = c.user_id) creator,
+        (SELECT COUNT(*) FROM t_question tq WHERE tq.course_id = c.id) questionQty,
+        (SELECT COUNT(*) FROM t_catalog tc WHERE tc.course_id = c.id) catalogQty,
+        (SELECT COUNT(*) FROM t_tag tt WHERE tt.course_id = c.id) tagQty
+        FROM t_course c
+        <include refid="pageWhere"/>
+        limit #{offset},#{pageSize}
+    </select>
+    <resultMap id="CourseALl" type="Course">
+        <id property="id" column="id"/>
+        <collection property="catalogList" ofType="Catalog" column="id" select="com.yan.dao.CatalogDao.findCatalogListByCourse"/>
+        <collection property="tagList" ofType="Tag" column="id" select="com.yan.dao.TagDao.findTagListByCourse"/>
+    </resultMap>
+    <select id="findCount" parameterType="QueryPageBean" resultType="long">
+        select count(*) from t_course c
+        <include refid="pageWhere"/>
+    </select>
+    <sql id="pageWhere">
+        <where>
+            <if test="queryParams.name != null and queryParams.name != ''">
+                and c.name like "%"#{queryParams.name}"%"
+            </if>
+            <if test="queryParams.status != null">
+                and c.is_show = #{queryParams.status}
+            </if>
+        </where>
+    </sql>
+    <insert id="add" parameterType="Course">
+        insert into t_course (name,create_date,is_show,user_id) values (#{name},#{createDate},#{isShow},#{userId});
+    </insert>
+    <update id="update" parameterType="Course">
+        update t_course set name = #{name},is_show = #{isShow} where id = #{id}
+    </update>
+
+</mapper>
